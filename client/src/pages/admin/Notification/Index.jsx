@@ -1,6 +1,6 @@
 import React from 'react'
 import { NotificationCard } from './components/NotificationCard'
-import { useGetPendingQuizzesQuery } from '@/services/AdminApi/adminQuizApi'
+import { useGetPendingQuizzesQuery } from '@/services/adminApi/adminQuizApi'
 import QuizPublishRequests from './components/QuizPublishRequests'
 
 const Index = () => {
