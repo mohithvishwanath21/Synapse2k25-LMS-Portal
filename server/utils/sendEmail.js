@@ -309,153 +309,84 @@
 //         return false;
 //     }
 // };
-import nodemailer from 'nodemailer'
-import 'dotenv/config'
+import 'dotenv/config';
+import formData from 'form-data';
+import Mailgun from 'mailgun.js';
 
 export const sendEmailOTP = async(email, name, otp) => {
-    // ELASTIC EMAIL CONFIGURATION
-    const transport = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.elasticemail.com',
-        port: process.env.SMTP_PORT || 2525,  // Use 2525 for Render free tier
-        secure: false,
-        auth: {
-            user: process.env.SMTP_USER,      // Your verified email (vshmohith@gmail.com)
-            pass: process.env.SMTP_PASS       // Your Elastic Email SMTP password
-        },
-    });
-
     try {
-        await transport.sendMail({
-            from: `"EduLMS" <${process.env.SENDER_EMAIL || 'vshmohith@gmail.com'}>`,
-            to: email,
-            subject: 'EduLMS Verification Message',
-            html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                    <h2>Dear ${name},</h2>
-                    
-                    <p>Welcome to <strong>EduLMS</strong>!</p>
-                    
-                    <p>To ensure the security of your account, we require you to verify your email address. 
-                    Please use the One-Time Password (OTP) provided below to complete your email verification:</p>
-                    
-                    <div style="background: #f4f4f4; padding: 15px; font-size: 28px; 
-                          font-weight: bold; text-align: center; margin: 25px 0; 
-                          letter-spacing: 5px; border-radius: 5px;">
-                        ${otp}
-                    </div>
-                    
-                    <p><strong>This code is valid for the next 5 minutes.</strong></p>
-                    
-                    <p>If you did not request this OTP, please ignore this email or contact our support team for assistance.</p>
-                    
-                    <p>Thank you for choosing EduLMS. We're excited to have you on board and look forward to helping you achieve your learning goals.</p>
-                    
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-                    
-                    <p style="color: #666; font-size: 14px;">
-                        <strong>Best regards,</strong><br>
-                        The EduLMS Team<br>
-                        www.EduLMS.edu<br>
-                        EduLMSlms@gmail.com
-                    </p>
-                </div>
-            `,
-            text: `
-Dear ${name},
-
-Welcome to EduLMS!
-
-To ensure the security of your account, we require you to verify your email address. Please use the One-Time Password (OTP) provided below to complete your email verification:
-
-Your OTP Code: ${otp}
-
-This code is valid for the next 5 minutes.
-If you did not request this OTP, please ignore this email or contact our support team for assistance.
-Thank you for choosing EduLMS. We're excited to have you on board and look forward to helping you achieve your learning goals.
-
-Best regards,
-The EduLMS Team
-www.EduLMS.edu
-EduLMSlms@gmail.com
-            `
+        // Initialize Mailgun with API key
+        const mailgun = new Mailgun(formData);
+        const mg = mailgun.client({
+            username: 'api',
+            key: process.env.MAILGUN_API_KEY || 'your-api-key-here'
         });
 
-        console.log(`✅ OTP email sent to ${email} via Elastic Email`);
+        await mg.messages.create(
+            process.env.MAILGUN_DOMAIN || 'sandbox66027832c4804ed3b3fdfcd7368f9a4c.mailgun.org',
+            {
+                from: `EduLMS <postmaster@${process.env.MAILGUN_DOMAIN || 'sandbox66027832c4804ed3b3fdfcd7368f9a4c.mailgun.org'}>`,
+                to: [email],
+                subject: 'EduLMS Verification Message',
+                html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px;">
+                        <h2>Dear ${name},</h2>
+                        <p>Welcome to <strong>EduLMS</strong>!</p>
+                        <p>To ensure the security of your account, we require you to verify your email address.</p>
+                        <div style="background: #f4f4f4; padding: 15px; font-size: 28px; 
+                              font-weight: bold; text-align: center; margin: 25px 0; 
+                              letter-spacing: 5px; border-radius: 5px;">
+                            ${otp}
+                        </div>
+                        <p><strong>This code is valid for the next 5 minutes.</strong></p>
+                        <p>If you did not request this OTP, please ignore this email.</p>
+                        <p>Thank you for choosing EduLMS!</p>
+                        <hr style="margin: 30px 0;">
+                        <p style="color: #666; font-size: 14px;">
+                            <strong>Best regards,</strong><br>
+                            The EduLMS Team<br>
+                            www.EduLMS.edu
+                        </p>
+                    </div>
+                `,
+                text: `Dear ${name},\n\nYour EduLMS verification code is: ${otp}\n\nThis code expires in 5 minutes.\n\nBest regards,\nThe EduLMS Team`
+            }
+        );
+
+        console.log(`✅ OTP email sent to ${email} via Mailgun API`);
         return true;
         
     } catch (error) {
-        console.error('❌ Elastic Email error:', error.message);
-        console.error('Full error details:', error);
-        return false; // Return false instead of throwing
+        console.error('❌ Mailgun API error:', error.message);
+        console.error('Full error:', error);
+        return false;
     }
 };
 
 export const sendEmailResetPassword = async (email, name, resetToken) => {
-    const transport = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.elasticemail.com',
-        port: process.env.SMTP_PORT || 2525,
-        secure: false,
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
-        },
-    });
-
     try {
-        await transport.sendMail({
-            from: `"EduLMS" <${process.env.SENDER_EMAIL || 'vshmohith@gmail.com'}>`,
-            to: email,
-            subject: 'EduLMS Reset Password OTP',
-            html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                    <h2>Dear ${name},</h2>
-                    
-                    <p>We received a request to reset your password for your EduLMS account associated with this email address. 
-                    If you didn't request a password reset, please ignore this email.</p>
-                    
-                    <div style="background: #f4f4f4; padding: 15px; font-size: 28px; 
-                          font-weight: bold; text-align: center; margin: 25px 0; 
-                          letter-spacing: 5px; border-radius: 5px;">
-                        ${resetToken}
-                    </div>
-                    
-                    <p><strong>This code will expire in 10 minutes for your security.</strong></p>
-                    
-                    <p>If the OTP has expired, you can request a new password reset OTP from the EduLMS website.</p>
-                    
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-                    
-                    <p style="color: #666; font-size: 14px;">
-                        <strong>Best regards,</strong><br>
-                        The EduLMS Team<br>
-                        www.EduLMS.edu<br>
-                        EduLMSlms@gmail.com
-                    </p>
-                </div>
-            `,
-            text: `
-Dear ${name},
-
-We received a request to reset your password for your EduLMS account associated with this email address. If you didn't request a password reset, please ignore this email.
-
-To reset your password, Please use the One-Time Password (OTP) provided below :
-
-${resetToken}
-
-This code will expire in 10 minutes for your security. If the OTP has expired, you can request a new password reset OTP from the EduLMS website.
-
-Best regards,
-The EduLMS Team
-www.EduLMS.edu
-EduLMSlms@gmail.com
-            `
+        const mailgun = new Mailgun(formData);
+        const mg = mailgun.client({
+            username: 'api',
+            key: process.env.MAILGUN_API_KEY || 'your-api-key-here'
         });
 
-        console.log(`✅ Reset password email sent to ${email} via Elastic Email`);
+        await mg.messages.create(
+            process.env.MAILGUN_DOMAIN || 'sandbox66027832c4804ed3b3fdfcd7368f9a4c.mailgun.org',
+            {
+                from: `EduLMS <postmaster@${process.env.MAILGUN_DOMAIN || 'sandbox66027832c4804ed3b3fdfcd7368f9a4c.mailgun.org'}>`,
+                to: [email],
+                subject: 'EduLMS Reset Password Code',
+                html: `<p>Your password reset code is: <strong>${resetToken}</strong></p>`,
+                text: `Your password reset code is: ${resetToken}`
+            }
+        );
+
+        console.log(`✅ Reset email sent to ${email} via Mailgun API`);
         return true;
         
     } catch (error) {
-        console.error('❌ Elastic Email error (reset):', error.message);
+        console.error('❌ Mailgun API error (reset):', error.message);
         return false;
     }
 };
