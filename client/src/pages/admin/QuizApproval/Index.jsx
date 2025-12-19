@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useGetPendingQuizzesQuery, useGetAllQuizzesQuery } from '@/services/AdminApi/adminQuizApi'
+import { useGetPendingQuizzesQuery, useGetAllQuizzesQuery } from '@/services/adminApi/adminQuizApi'
 import QuizPublishRequests from '../Notification/components/QuizPublishRequests' // We'll create this
 import QuizList from './components/QuizList' // We'll create this
 import LoadingSpinner from '@/components/FallbackUI/LoadingSpinner'
