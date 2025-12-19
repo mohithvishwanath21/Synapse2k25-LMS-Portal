@@ -167,145 +167,173 @@
 //     }
 // }
 
-import { Resend } from 'resend';
-import 'dotenv/config';
+// import { Resend } from 'resend';
+// import 'dotenv/config';
 
-// Initialize Resend with your API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+// // Initialize Resend with your API key
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendEmailOTP = async(email, name, otp) => {
-    try {
-        const { data, error } = await resend.emails.send({
-            from: 'EduLMS <onboarding@resend.dev>',  // Can change to your email later
-            to: email,
-            subject: 'EduLMS Verification Message',
-            html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                    <h2>Dear ${name},</h2>
+// export const sendEmailOTP = async(email, name, otp) => {
+//     try {
+//         const { data, error } = await resend.emails.send({
+//             from: 'EduLMS <onboarding@resend.dev>',  // Can change to your email later
+//             to: email,
+//             subject: 'EduLMS Verification Message',
+//             html: `
+//                 <div style="font-family: Arial, sans-serif; padding: 20px;">
+//                     <h2>Dear ${name},</h2>
                     
-                    <p>Welcome to <strong>EduLMS</strong>!</p>
+//                     <p>Welcome to <strong>EduLMS</strong>!</p>
                     
-                    <p>To ensure the security of your account, we require you to verify your email address. 
-                    Please use the One-Time Password (OTP) provided below to complete your email verification:</p>
+//                     <p>To ensure the security of your account, we require you to verify your email address. 
+//                     Please use the One-Time Password (OTP) provided below to complete your email verification:</p>
                     
-                    <div style="background: #f4f4f4; padding: 15px; font-size: 28px; 
-                          font-weight: bold; text-align: center; margin: 25px 0; 
-                          letter-spacing: 5px; border-radius: 5px;">
-                        ${otp}
-                    </div>
+//                     <div style="background: #f4f4f4; padding: 15px; font-size: 28px; 
+//                           font-weight: bold; text-align: center; margin: 25px 0; 
+//                           letter-spacing: 5px; border-radius: 5px;">
+//                         ${otp}
+//                     </div>
                     
-                    <p><strong>This code is valid for the next 5 minutes.</strong></p>
+//                     <p><strong>This code is valid for the next 5 minutes.</strong></p>
                     
-                    <p>If you did not request this OTP, please ignore this email or contact our support team for assistance.</p>
+//                     <p>If you did not request this OTP, please ignore this email or contact our support team for assistance.</p>
                     
-                    <p>Thank you for choosing EduLMS. We're excited to have you on board and look forward to helping you achieve your learning goals.</p>
+//                     <p>Thank you for choosing EduLMS. We're excited to have you on board and look forward to helping you achieve your learning goals.</p>
                     
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+//                     <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
                     
-                    <p style="color: #666; font-size: 14px;">
-                        <strong>Best regards,</strong><br>
-                        The EduLMS Team<br>
-                        www.EduLMS.edu<br>
-                        EduLMSlms@gmail.com
-                    </p>
-                </div>
-            `,
-            // Also include plain text version
-            text: `
-Dear ${name},
+//                     <p style="color: #666; font-size: 14px;">
+//                         <strong>Best regards,</strong><br>
+//                         The EduLMS Team<br>
+//                         www.EduLMS.edu<br>
+//                         EduLMSlms@gmail.com
+//                     </p>
+//                 </div>
+//             `,
+//             // Also include plain text version
+//             text: `
+// Dear ${name},
 
-Welcome to EduLMS!
+// Welcome to EduLMS!
 
-To ensure the security of your account, we require you to verify your email address. Please use the One-Time Password (OTP) provided below to complete your email verification:
+// To ensure the security of your account, we require you to verify your email address. Please use the One-Time Password (OTP) provided below to complete your email verification:
 
-Your OTP Code: ${otp}
+// Your OTP Code: ${otp}
 
-This code is valid for the next 5 minutes.
-If you did not request this OTP, please ignore this email or contact our support team for assistance.
-Thank you for choosing EduLMS. We're excited to have you on board and look forward to helping you achieve your learning goals.
+// This code is valid for the next 5 minutes.
+// If you did not request this OTP, please ignore this email or contact our support team for assistance.
+// Thank you for choosing EduLMS. We're excited to have you on board and look forward to helping you achieve your learning goals.
 
-Best regards,
-The EduLMS Team
-www.EduLMS.edu
-EduLMSlms@gmail.com
-            `
-        });
+// Best regards,
+// The EduLMS Team
+// www.EduLMS.edu
+// EduLMSlms@gmail.com
+//             `
+//         });
 
-        if (error) {
-            console.error('❌ Resend Error:', error);
-            return false; // Return false instead of throwing error
-        }
+//         if (error) {
+//             console.error('❌ Resend Error:', error);
+//             return false; // Return false instead of throwing error
+//         }
 
-        console.log(`✅ OTP email sent to ${email} (ID: ${data?.id})`);
-        return true;
+//         console.log(`✅ OTP email sent to ${email} (ID: ${data?.id})`);
+//         return true;
         
-    } catch (error) {
-        console.error('❌ Email sending failed:', error.message);
-        return false; // Don't throw - return false so controller can handle it
-    }
-};
+//     } catch (error) {
+//         console.error('❌ Email sending failed:', error.message);
+//         return false; // Don't throw - return false so controller can handle it
+//     }
+// };
 
-export const sendEmailResetPassword = async (email, name, resetToken) => {
-    try {
-        const { data, error } = await resend.emails.send({
-            from: 'EduLMS <onboarding@resend.dev>',
-            to: email,
-            subject: 'EduLMS Reset Password OTP',
-            html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                    <h2>Dear ${name},</h2>
+// export const sendEmailResetPassword = async (email, name, resetToken) => {
+//     try {
+//         const { data, error } = await resend.emails.send({
+//             from: 'EduLMS <onboarding@resend.dev>',
+//             to: email,
+//             subject: 'EduLMS Reset Password OTP',
+//             html: `
+//                 <div style="font-family: Arial, sans-serif; padding: 20px;">
+//                     <h2>Dear ${name},</h2>
                     
-                    <p>We received a request to reset your password for your EduLMS account associated with this email address. 
-                    If you didn't request a password reset, please ignore this email.</p>
+//                     <p>We received a request to reset your password for your EduLMS account associated with this email address. 
+//                     If you didn't request a password reset, please ignore this email.</p>
                     
-                    <div style="background: #f4f4f4; padding: 15px; font-size: 28px; 
-                          font-weight: bold; text-align: center; margin: 25px 0; 
-                          letter-spacing: 5px; border-radius: 5px;">
-                        ${resetToken}
-                    </div>
+//                     <div style="background: #f4f4f4; padding: 15px; font-size: 28px; 
+//                           font-weight: bold; text-align: center; margin: 25px 0; 
+//                           letter-spacing: 5px; border-radius: 5px;">
+//                         ${resetToken}
+//                     </div>
                     
-                    <p><strong>This code will expire in 10 minutes for your security.</strong></p>
+//                     <p><strong>This code will expire in 10 minutes for your security.</strong></p>
                     
-                    <p>If the OTP has expired, you can request a new password reset OTP from the EduLMS website.</p>
+//                     <p>If the OTP has expired, you can request a new password reset OTP from the EduLMS website.</p>
                     
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+//                     <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
                     
-                    <p style="color: #666; font-size: 14px;">
-                        <strong>Best regards,</strong><br>
-                        The EduLMS Team<br>
-                        www.EduLMS.edu<br>
-                        EduLMSlms@gmail.com
-                    </p>
-                </div>
-            `,
-            text: `
-Dear ${name},
+//                     <p style="color: #666; font-size: 14px;">
+//                         <strong>Best regards,</strong><br>
+//                         The EduLMS Team<br>
+//                         www.EduLMS.edu<br>
+//                         EduLMSlms@gmail.com
+//                     </p>
+//                 </div>
+//             `,
+//             text: `
+// Dear ${name},
 
-We received a request to reset your password for your EduLMS account associated with this email address. If you didn't request a password reset, please ignore this email.
+// We received a request to reset your password for your EduLMS account associated with this email address. If you didn't request a password reset, please ignore this email.
 
-To reset your password, Please use the One-Time Password (OTP) provided below :
+// To reset your password, Please use the One-Time Password (OTP) provided below :
 
-${resetToken}
+// ${resetToken}
 
-This code will expire in 10 minutes for your security. If the OTP has expired, you can request a new password reset OTP from the EduLMS website.
+// This code will expire in 10 minutes for your security. If the OTP has expired, you can request a new password reset OTP from the EduLMS website.
 
-Best regards,
-The EduLMS Team
-www.EduLMS.edu
-EduLMSlms@gmail.com
-            `
-        });
+// Best regards,
+// The EduLMS Team
+// www.EduLMS.edu
+// EduLMSlms@gmail.com
+//             `
+//         });
 
-        if (error) {
-            console.error('❌ Resend Error (reset password):', error);
-            return false;
-        }
+//         if (error) {
+//             console.error('❌ Resend Error (reset password):', error);
+//             return false;
+//         }
 
-        console.log(`✅ Reset password email sent to ${email} (ID: ${data?.id})`);
-        return true;
+//         console.log(`✅ Reset password email sent to ${email} (ID: ${data?.id})`);
+//         return true;
         
+//     } catch (error) {
+//         console.error('❌ Reset password email failed:', error.message);
+//         return false;
+//     }
+// };
+import nodemailer from 'nodemailer'
+import 'dotenv/config'
+
+export const sendEmailOTP = async(email, name, otp)=>{
+    const transport = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.elasticemail.com',
+        port: process.env.SMTP_PORT || 2525,
+        secure: false,
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        },
+    });
+
+    try {
+        await transport.sendMail({
+            from: `"EduLMS" <${process.env.SENDER_EMAIL}>`,
+            to: email,
+            subject: `EduLMS Verification Message`,
+            text: `Your OTP: ${otp}`,
+        });
+        console.log(`✅ OTP sent via Elastic Email to ${email}`);
+        return true;
     } catch (error) {
-        console.error('❌ Reset password email failed:', error.message);
+        console.error('Elastic Email error:', error);
         return false;
     }
 };
